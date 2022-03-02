@@ -38,7 +38,6 @@ int main()
         }
         else
         {
-            // TODO:
             pid_t parentOrChild = fork();
             if (parentOrChild == 0)
             {
