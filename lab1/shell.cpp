@@ -1,13 +1,16 @@
 #include <iostream>
 #include <string>
+#include <unistd.h>
+#include <cstring>
+#include <sys/wait.h>
 using namespace std;
 
 int main()
 {
+    int status;
     string type1Commands[5] = {"hello", "bye", "assignment", "author", "section"};
     while (true)
     {
-        cout << "Shell> ";
         string command;
         getline(cin, command);
         if (command == "hello")
@@ -36,6 +39,18 @@ int main()
         else
         {
             // TODO:
+            pid_t parentOrChild = fork();
+            if (parentOrChild == 0)
+            {
+                string dir = "/bin/" + command;
+                const char *const args[] = {command.c_str(), nullptr};
+                execve(dir.c_str(), const_cast<char *const *>(args), NULL);
+                exit(status);
+            }
+            else
+            {
+                wait(&status);
+            }
         }
     }
 }
