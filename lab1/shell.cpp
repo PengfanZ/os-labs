@@ -3,6 +3,7 @@
 #include <unistd.h>
 #include <cstring>
 #include <sys/wait.h>
+#include <cstdlib>
 using namespace std;
 
 int main()
@@ -42,7 +43,7 @@ int main()
             if (parentOrChild == 0)
             {
                 string dir = "/bin/" + command;
-                const char *const args[] = {command.c_str(), nullptr};
+                const char *const args[] = {command.c_str(), NULL};
                 execve(dir.c_str(), const_cast<char *const *>(args), NULL);
                 exit(status);
             }
