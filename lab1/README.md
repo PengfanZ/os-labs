@@ -1,0 +1,1 @@
+Type 'g++ shell.cpp' to compile the program. Then type './a.out' to run the program.
