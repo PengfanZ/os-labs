@@ -107,6 +107,129 @@ void fifo(vector<deque<int>> timing, int n, queue<int> ready)
     }
 }
 
+// RR scheduling
+void rr(vector<deque<int>> timing, int n, queue<int> ready, int q)
+{
+    cout << "RR scheduling" << endl;
+    int globalTime = 1;
+    // processes that are blocked
+    set<int> pBlocked;
+    // unfinished processes
+    int unfinished = n;
+    while (unfinished != 0)
+    {
+        // process that is running
+        if (!ready.empty())
+        {
+            int pRunning = ready.front();
+            for (int i = 0; i < q; i++)
+            {
+                cout << "Cycle " << globalTime << ": ";
+                bool hasTermination = false;
+                // state for each process
+                for (int j = 1; j <= n; j++)
+                {
+                    cout << "P" << j << ": ";
+                    if (j == pRunning && timing[j - 1].size() > 1)
+                    {
+                        cout << "Run    ";
+                        timing[pRunning - 1][0]--;
+                        if (timing[j - 1][0] == 0)
+                        {
+                            hasTermination = true;
+                        }
+                    }
+                    else if (j == pRunning && timing[j - 1].size() == 1)
+                    {
+                        cout << "Terminate    ";
+                        hasTermination = true;
+                        timing[pRunning - 1].pop_front();
+                    }
+                    else
+                    {
+                        if (pBlocked.find(j) != pBlocked.end())
+                        {
+                            cout << "Blocked    ";
+                            timing[j - 1][0]--;
+                            if (timing[j - 1][0] == 0)
+                            {
+                                pBlocked.erase(j);
+                                ready.push(j);
+                                timing[j - 1].pop_front();
+                            }
+                        }
+                        else if (!timing[j - 1].empty())
+                        {
+                            cout << "Ready  ";
+                        }
+                        else
+                        {
+                            cout << "    ";
+                        }
+                    }
+                }
+                globalTime++;
+                cout << endl;
+                if (hasTermination)
+                {
+                    break;
+                }
+            }
+            ready.pop();
+            // termination case
+            if (timing[pRunning - 1].empty())
+            {
+                unfinished--;
+            }
+            else
+            {
+                if (timing[pRunning - 1][0] == 0)
+                {
+                    timing[pRunning - 1].pop_front();
+                }
+
+                if (timing[pRunning - 1].empty())
+                {
+                    unfinished--;
+                }
+                else if (timing[pRunning - 1].size() % 2 == 1)
+                {
+                    ready.push(pRunning);
+                }
+                else
+                {
+                    pBlocked.insert(pRunning);
+                }
+            }
+        }
+        else
+        {
+            cout << "Cycle " << globalTime << ": ";
+            for (int i = 1; i <= n; i++)
+            {
+                cout << "P" << i << ": ";
+                if (pBlocked.find(i) != pBlocked.end())
+                {
+                    cout << "Blocked  ";
+                    timing[i - 1][0]--;
+                    if (timing[i - 1][0] == 0)
+                    {
+                        pBlocked.erase(i);
+                        ready.push(i);
+                        timing[i - 1].pop_front();
+                    }
+                }
+                else
+                {
+                    cout << "    ";
+                }
+            }
+            globalTime++;
+            cout << endl;
+        }
+    }
+}
+
 vector<deque<int>> buildTiming(vector<int> input, int start)
 {
     vector<deque<int>> timing;
@@ -165,6 +288,8 @@ int main()
     else if (SA == 2)
     {
         timing = buildTiming(input, 3);
+        int quantum = input.at(2);
+        rr(timing, n, ready, quantum);
     }
     else
     {
