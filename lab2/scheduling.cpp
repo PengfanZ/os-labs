@@ -8,7 +8,7 @@
 using namespace std;
 
 // fifo scheduling
-void fifo(vector<deque<int>> timing, int n, queue<int> ready)
+void fifo(vector<deque<int> > timing, int n, queue<int> ready)
 {
     cout << "FIFO scheduling" << endl;
     int globalTime = 1;
@@ -108,7 +108,7 @@ void fifo(vector<deque<int>> timing, int n, queue<int> ready)
 }
 
 // RR scheduling
-void rr(vector<deque<int>> timing, int n, queue<int> ready, int q)
+void rr(vector<deque<int> > timing, int n, queue<int> ready, int q)
 {
     cout << "RR scheduling" << endl;
     int globalTime = 1;
@@ -230,9 +230,9 @@ void rr(vector<deque<int>> timing, int n, queue<int> ready, int q)
     }
 }
 
-vector<deque<int>> buildTiming(vector<int> input, int start)
+vector<deque<int> > buildTiming(vector<int> input, int start)
 {
-    vector<deque<int>> timing;
+    vector<deque<int> > timing;
     int i = start;
     while (i < input.size())
     {
@@ -276,7 +276,7 @@ int main()
     }
 
     // each inner vector is the running and blocking time for each process
-    vector<deque<int>> timing;
+    vector<deque<int> > timing;
 
     // fifo scheduling
     if (SA == 1)
